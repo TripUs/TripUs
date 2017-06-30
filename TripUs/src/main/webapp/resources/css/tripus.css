@@ -1,0 +1,42 @@
+.slide-img {
+	width: 200px;
+	height: 150px;
+}
+
+.mytrip-cover, .detail-area-img {
+	width: 100%;
+}
+
+#login-icon {
+	width: 100%;
+	margin: 0 auto;
+	text-align: center;
+}
+
+.ui-content {
+	padding: 0px;
+}
+
+#mytrip-invite, #mytrip-maps {
+	display: none;
+}
+
+.mytrip-detail-btn {
+	box-sizing: border-box;
+	position: relative;
+	display: inline-block;
+	top: -48px;
+	width: 50%;
+	background-color: black;
+	color: white;
+	opacity: 0.5;
+}
+
+.slider-text {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	width: 200px;
+	height: 20px;
+	text-decoration: none;
+}
