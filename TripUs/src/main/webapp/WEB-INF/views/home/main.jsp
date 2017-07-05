@@ -15,13 +15,12 @@
         <script type="text/javascript" src="resources/js/bootstrap.min.js"></script>
         
 	    <title>TripUs</title>
-</head>
     <style>
         body {
             padding-top: 50px;
         }
         
-        .continer-fluid-2 {
+        .continer-fluid-2{
             padding: 0px;
         }
         
