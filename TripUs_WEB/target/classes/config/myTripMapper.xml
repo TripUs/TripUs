@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mytrip">
+	<delete id="deleteMyTrip" parameterType="int">
+		DELETE FROM MYTRIP WHERE CODE=#{value}
+	</delete>
+	
+	<delete id="deleteMyTripGroup" parameterType="int">
+		DELETE FROM TRIPGROUP WHERE CODE=#{value}
+	</delete>
+	
+	<delete id="deleteTripList" parameterType="int">
+		DELETE FROM TRIPLIST_DETAIL WHERE MYTRIPCODE=#{value}
+	</delete>
+	
+	<delete id="deleteTripBbs" parameterType="int">
+		DELETE FROM TRIPLISTBBS WHERE TRIPCODE=#{value}
+	</delete>	
+	
+	<select id="getCodeCnt" resultType="int">
+		SELECT COUNT(CODE) FROM MYTRIP
+	</select>
+
+	<delete id="deleteMyTripList" parameterType="java.util.Map">
+		DELETE FROM TRIPLIST_DETAIL WHERE MYTRIPCODE=#{code} AND CONTENTID=#{contentid}
+	</delete>
+
+	<insert id="insertTripGroup" parameterType="java.util.Map">
+		INSERT INTO TRIPGROUP VALUES (#{code}, #{userid})
+	</insert>
+
+	<insert id="insertMyTrip" parameterType="com.hb.tripus.model.dto.MyTripDto">
+		INSERT INTO MYTRIP(CODE, TITLE, STARTDATE, ENDDATE, THEMA)
+		VALUES (#{code}, #{title}, #{startdate}, #{enddate}, #{thema})
+	</insert>
+	
+	<update id="updateTripUserNum" parameterType="int">
+		UPDATE MYTRIP SET NUM=NUM+1 WHERE CODE=#{value}
+	</update>
+	
+	<select id="getMyTrip" parameterType="String" resultType="com.hb.tripus.model.dto.MyTripDto">
+		SELECT A.CODE AS CODE, B.USERID AS USERID, A.TITLE AS TITLE, A.COVERIMG AS COVERIMG, 
+		A.STARTDATE AS STARTDATE, A.ENDDATE AS ENDDATE, A.THEMA AS THEMA, A.NUM AS NUM
+		FROM MYTRIP A, TRIPGROUP B 
+		WHERE A.CODE=B.CODE AND B.USERID=#{value}
+	</select>
+	
+	<select id="getMyTripSelectOne" parameterType="int" resultType="com.hb.tripus.model.dto.MyTripDto">
+		SELECT * FROM MYTRIP WHERE CODE=#{value}
+	</select>
+	
+	<select id="getMyTripList" parameterType="int" resultType="com.hb.tripus.model.dto.MyTripListDto">
+		SELECT * FROM TRIPLIST WHERE CODE=#{value}
+	</select>
+	
+	<insert id="insertMyTripList" parameterType="com.hb.tripus.model.dto.MyTripListDto">
+		INSERT INTO TRIPLIST VALUES (#{code}, #{daynum}, #{tripdate})
+	</insert>
+	
+	<select id="getMyTripDetail" parameterType="int" resultType="com.hb.tripus.model.dto.MyTripDetailDto">
+		SELECT * FROM TRIPLIST_DETAIL WHERE MYTRIPCODE=#{value} ORDER BY TRIPDATE, IDX
+	</select>
+	
+	<insert id="insertMyTripDetail" parameterType="com.hb.tripus.model.dto.MyTripDetailDto">
+		INSERT INTO TRIPLIST_DETAIL
+		VALUES (TRIPLIST_DETAIL_IDX_SEQ.NEXTVAL, #{mytripcode}, #{tripdate}, #{contentid}, #{content_title}, #{content_img}, #{mapx}, #{mapy})
+	</insert>
+	
+	<select id="getGrpCnt" resultType="int">
+		SELECT MAX(GRP) FROM TRIPLISTBBS
+	</select>
+	
+	<insert id="insertTripStory" parameterType="com.hb.tripus.model.dto.MyTripBbsDto">
+		INSERT INTO TRIPLISTBBS (IDX, TRIPCODE, TRIPNUM, TRIPDATE, USERID, USERNICNAME, USERPROFILE, MEMO, GRP, REPORTING_DATE)
+		VALUES (TRIPLISTBBS_IDX_SEQ.NEXTVAL, #{tripcode}, #{tripnum}, #{tripdate}, #{userid}, #{usernicname}, #{userprofile}, #{memo}, 
+		#{grp}, SYSDATE)
+	</insert>
+	
+	<select id="getTripStory" parameterType="int" resultType="com.hb.tripus.model.dto.MyTripBbsDto">
+		SELECT * FROM TRIPLISTBBS WHERE TRIPCODE=#{tripcode} ORDER BY GRP, SEQ
+	</select>
+	
+	<select id="getOneTripStory" parameterType="int" resultType="com.hb.tripus.model.dto.MyTripBbsDto">
+		SELECT * FROM TRIPLISTBBS WHERE IDX=#{value}
+	</select>
+	
+	<update id="updateStorySeqLvl" parameterType="java.util.Map">
+		UPDATE TRIPLISTBBS SET SEQ=#{seq1} WHERE GRP=#{grp} AND SEQ <![CDATA[ > ]]> #{seq2}
+	</update>
+	
+	<insert id="insertStoryReple" parameterType="com.hb.tripus.model.dto.MyTripBbsDto">
+		INSERT INTO TRIPLISTBBS
+		VALUES (TRIPLISTBBS_IDX_SEQ.NEXTVAL, #{tripcode}, #{tripnum}, #{tripdate}, #{userid}, #{usernicname}, #{userprofile}, #{memo}, #{grp}, #{seq}, #{lvl}, SYSDATE)
+	</insert>
+	
+	<select id="getFriendList" parameterType="String" resultType="com.hb.tripus.model.dto.FriendListDto">
+		SELECT * FROM FRIENDLIST WHERE USERID=#{value} AND FLAG=2 
+	</select>
+</mapper>

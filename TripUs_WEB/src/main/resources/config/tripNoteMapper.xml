@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="tripnote">
+	<delete id="delTripNote" parameterType="int">
+		DELETE FROM TRIPNOTE WHERE IDX=#{value}
+	</delete>
+	
+	<delete id="delNoteContent" parameterType="int">
+		DELETE FROM NOTE_CONTENT WHERE IDX=#{value}
+	</delete>
+	
+	<delete id="delNoteContentImg" parameterType="int">
+		DELETE FROM NOTE_CONTENT_IMG WHERE IDX=#{value}
+	</delete>
+	
+	<delete id="delNoteLike" parameterType="int">
+		DELETE FROM NOTELIKE WHERE IDX=#{value}
+	</delete>
+	
+	<delete id="delNoteBbs" parameterType="int">
+		DELETE FROM TRIPNOTEBBS WHERE TRIPNOTE_IDX=#{value}
+	</delete>	
+
+	<select id="getCommentNum" parameterType="int" resultType="int">
+		SELECT COUNT(IDX) FROM TRIPNOTEBBS WHERE TRIPNOTE_IDX=#{value}
+	</select>
+	
+	<update id="updateCommentNum" parameterType="java.util.Map">
+		UPDATE TRIPNOTE SET COMMENTNUM=#{commentnum} WHERE IDX=#{idx}
+	</update>
+	
+	<select id="getNoteGrpCnt" resultType="int">
+		SELECT MAX(GRP) FROM TRIPNOTEBBS
+	</select>
+	
+	<insert id="insertNoteComment" parameterType="com.hb.tripus.model.dto.TripNoteBbsDto">
+		INSERT INTO TRIPNOTEBBS (IDX, TRIPNOTE_IDX, USERID, USERNICNAME, USERPROFILE, USERCOMMENT, GRP, REPORTING_DATE, REPORTING_TIME)
+		VALUES (TRIPNOTEBBS_IDX_SEQ.NEXTVAL, #{tripnote_idx}, #{userid}, #{usernicname}, #{userprofile}, #{usercomment}, #{grp}, #{reporting_date}, #{reporting_time})
+	</insert>
+
+	<select id="getNoteComment" parameterType="int" resultType="com.hb.tripus.model.dto.TripNoteBbsDto">
+		SELECT * FROM TRIPNOTEBBS WHERE TRIPNOTE_IDX=#{value} ORDER BY GRP DESC, SEQ
+	</select>
+
+	<insert id = "noteLikeUp" parameterType="java.util.Map" >
+		INSERT INTO NOTELIKE VALUES (#{idx}, #{userid}, 1)
+	</insert>
+
+	<delete id = "noteLikeDown" parameterType="java.util.Map">
+		DELETE FROM NOTELIKE WHERE IDX=#{idx} AND USERID=#{userid}
+	</delete> 
+
+	<update id="updateNoteLike" parameterType="java.util.Map">
+		UPDATE TRIPNOTE SET LIKEFLAG=#{likeCnt} WHERE IDX=#{idx}
+	</update>
+
+	<select id="getNoteLike" parameterType="java.util.Map" resultType="int">
+		SELECT COUNT(LIKEFLAG) FROM NOTELIKE WHERE USERID=#{userid} AND IDX=#{idx}
+	</select>
+	
+	<select id="getNoteOne" parameterType="int" resultType="com.hb.tripus.model.dto.TripNoteDto">
+		SELECT * FROM TRIPNOTE WHERE IDX=#{value}
+	</select>
+	
+	<select id="getNoteOneContent" parameterType="int" resultType="com.hb.tripus.model.dto.TripNoteContentDto">
+		SELECT * FROM NOTE_CONTENT WHERE IDX=#{value}
+	</select>
+	
+	<select id="getNoteOneImg" parameterType="int" resultType="com.hb.tripus.model.dto.TripNoteImgDto">
+		SELECT * FROM NOTE_CONTENT_IMG WHERE IDX=#{value}
+	</select>
+	
+	<select id="getAllNote" resultType="com.hb.tripus.model.dto.TripNoteDto">
+		SELECT * FROM TRIPNOTE
+	</select>
+
+	<select id="getMyNote" parameterType="String" resultType="com.hb.tripus.model.dto.TripNoteDto">
+		SELECT * FROM TRIPNOTE WHERE USERID=#{value}
+	</select>
+
+	<insert id="insertShareTripNote" parameterType="com.hb.tripus.model.dto.TripNoteDto">
+		INSERT INTO TRIPNOTE (IDX, TRIPCODE, USERID, USERNICNAME, USERPROFILE, TITLE, REPORTING_DATE, REPORTING_TIME)
+		VALUES (TRIPNOTE_IDX_SEQ.NEXTVAL, #{tripcode}, #{userid}, #{usernicname}, #{userprofile}, #{title}, #{reporting_date}, #{reporting_time})
+	</insert>
+	
+	<select id="getTripNoteIdx" parameterType="com.hb.tripus.model.dto.TripNoteDto" resultType="int">
+		SELECT IDX FROM TRIPNOTE WHERE USERID=#{userid} AND TITLE=#{title} AND REPORTING_TIME=#{reporting_time}
+	</select>
+	
+	<insert id="insertTripNoteContent" parameterType="com.hb.tripus.model.dto.TripNoteContentDto">
+		INSERT INTO NOTE_CONTENT VALUES (#{idx}, #{daynum}, #{title}, #{content})
+	</insert>
+	
+	<insert id="insertTripNoteImg" parameterType="com.hb.tripus.model.dto.TripNoteImgDto">
+		INSERT INTO NOTE_CONTENT_IMG VALUES (#{idx}, #{daynum}, #{imgname})
+	</insert>
+	
+	<update id="insertTripNoteThema" parameterType="com.hb.tripus.model.dto.TripNoteDto">
+		UPDATE TRIPNOTE SET THEMA=#{thema} WHERE IDX=#{idx}
+	</update>
+</mapper>
